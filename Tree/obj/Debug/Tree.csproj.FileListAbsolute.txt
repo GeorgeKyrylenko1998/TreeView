@@ -9,3 +9,16 @@ C:\Users\dinoz\Desktop\Tree\Tree\obj\Debug\Tree.exe
 C:\Users\dinoz\Desktop\Tree\Tree\obj\Debug\Tree.pdb
 C:\Users\dinoz\Desktop\Tree\Tree\obj\Debug\Tree.FormMain.resources
 C:\Users\dinoz\Desktop\Tree\Tree\bin\Debug\XML\XMLTree.xml
+C:\Users\dinoz\Desktop\Proj\Tree\Tree\bin\Debug\Tree.exe.config
+C:\Users\dinoz\Desktop\Proj\Tree\Tree\obj\Debug\Tree.exe
+C:\Users\dinoz\Desktop\Proj\Tree\Tree\obj\Debug\Tree.pdb
+C:\Users\dinoz\Desktop\Proj\Tree\Tree\bin\Debug\XML\XMLTreeType.xml
+C:\Users\dinoz\Desktop\Proj\Tree\Tree\bin\Debug\Tree.exe
+C:\Users\dinoz\Desktop\Proj\Tree\Tree\bin\Debug\Tree.pdb
+C:\Users\dinoz\Desktop\Proj\Tree\Tree\obj\Debug\Tree.csprojResolveAssemblyReference.cache
+C:\Users\dinoz\Desktop\Proj\Tree\Tree\obj\Debug\Tree.FormMain.resources
+C:\Users\dinoz\Desktop\Proj\Tree\Tree\obj\Debug\Tree.Properties.Resources.resources
+C:\Users\dinoz\Desktop\Proj\Tree\Tree\obj\Debug\Tree.csproj.GenerateResource.Cache
+C:\Users\dinoz\Desktop\Proj\Tree\Tree\bin\Debug\Logs\Logs.cs
+C:\Users\dinoz\Desktop\Proj\Tree\Tree\bin\Debug\Logs\Data.xml
+C:\Users\dinoz\Desktop\Proj\Tree\Tree\bin\Debug\XML\XMLTree.xml

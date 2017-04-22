@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Windows.Forms;
 using System.Xml;
@@ -9,6 +10,7 @@ namespace Tree.TreeContentSolution
     {
         public TreeView SetList(ref List<TreeContent> contents)
         {
+            if (contents == null) throw new ArgumentNullException(nameof(contents));
             TreeView localTreeView = new TreeView();
             contents = new List<TreeContent>();
             string path = Directory.GetCurrentDirectory();
@@ -18,11 +20,25 @@ namespace Tree.TreeContentSolution
 
             string pathXmlTreeType = Path.Combine(path, @"XML\XMLTreeType.xml");
             XmlDocument xmlTreeType = new XmlDocument();
-            xmlTreeType.Load(pathXmlTreeType);
+            try
+            {
+                xmlTreeType.Load(pathXmlTreeType);
+            }
+            catch (Exception ex)
+            {
+                Logs.Logs.WriteException(ex.Message);
+            }
             XmlElement xRootType = xmlTreeType.DocumentElement;
 
             XmlDocument xmlTree = new XmlDocument();
-            xmlTree.Load(pathXmlTree);
+            try
+            {
+                xmlTree.Load(pathXmlTree);
+            }
+            catch (Exception e)
+            {
+                Logs.Logs.WriteException(e.Message);
+            }
             XmlElement xRoot = xmlTree.DocumentElement;
 
             if (xRoot != null)
@@ -32,13 +48,13 @@ namespace Tree.TreeContentSolution
                     localTreeView.Nodes.Add(xNode.Name);
                     localTreeView.Nodes[localTreeView.Nodes.Count - 1].Tag = contents[contents.Count - 1];
                     var tNode = localTreeView.Nodes[localTreeView.Nodes.Count - 1];
-                    addTreeNode(xNode, ref tNode, contents[contents.Count - 1]);
+                    AddTreeNode(xNode, ref tNode, contents[contents.Count - 1]);
                 }
             AddTypeNode(contents, xRootType);
             return localTreeView;
         }
 
-        private void addTreeNode(XmlNode xmlNode, ref TreeNode treeNode, TreeContent treeContent)
+        private void AddTreeNode(XmlNode xmlNode, ref TreeNode treeNode, TreeContent treeContent)
         {
             if (xmlNode.HasChildNodes) //The current node has children
             {
@@ -55,7 +71,7 @@ namespace Tree.TreeContentSolution
                     treeNode.Nodes[treeNode.Nodes.Count - 1].Tag = treeContent.Contents[treeContent.Contents.Count - 1];
                     var tNode = treeNode.Nodes[x];
                     var treeContentContent = treeContent.Contents[x];
-                    addTreeNode(xNode, ref tNode, treeContentContent);
+                    AddTreeNode(xNode, ref tNode, treeContentContent);
                 }
             }
             else //No children, so add the outer xml (trimming off whitespace)
@@ -64,7 +80,7 @@ namespace Tree.TreeContentSolution
             }
         }
 
-        private void AddTypeNode(List<TreeContent> contents, XmlNode xRootType)
+        protected void AddTypeNode(List<TreeContent> contents, XmlNode xRootType)
         {
             int lastPoint = 0;
             int countPoint = xRootType.ChildNodes.Count;

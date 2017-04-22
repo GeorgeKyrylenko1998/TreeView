@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
 using System.Xml;
-using Tree.Properties;
 using Tree.TreeContentSolution;
 
 namespace Tree
@@ -22,8 +22,8 @@ namespace Tree
         public Action ClearAction;
         public List<TreeContent> Content = new List<TreeContent>();
         private List<object> _controls = new List<object>();
-        public TreeView treeView;
-        private object selectNode;
+        public TreeView TreeView;
+        private object _selectNode;
         public FormMain()
         {
             InitializeComponent();
@@ -45,11 +45,11 @@ namespace Tree
         }
         private void LoadView()
         {
-            treeView = new LoadTreeContent().SetList(ref Content);
-            treeView.Height = Height;
-            treeView.Width = Width / 3;
-            treeView.Anchor = (AnchorStyles.Left | AnchorStyles.Bottom | AnchorStyles.Top);
-            Invoke(AddNodeDelegate, treeView);
+            TreeView = new LoadTreeContent().SetList(ref Content);
+            TreeView.Height = Height;
+            TreeView.Width = Width / 3;
+            TreeView.Anchor = (AnchorStyles.Left | AnchorStyles.Bottom | AnchorStyles.Top);
+            Invoke(AddNodeDelegate, TreeView);
         }
         private void CreateTreeView(ref TreeView treeView)
         {
@@ -85,7 +85,7 @@ namespace Tree
 
         public void SelectNode(object sender, TreeViewEventArgs e)
         {
-            selectNode = e.Node;
+            _selectNode = e.Node;
             TreeNode tNode = e.Node;
             TreeContent tContent = (TreeContent)tNode.Tag;
             Thread generateForm = new Thread(GenerateForm);
@@ -136,31 +136,54 @@ namespace Tree
 
         private void buttonSave_Click(object sender, EventArgs e)
         {
-            Controls.Remove(treeView);
+            TreeView.ExpandAll();
+            Controls.Remove(TreeView);
             Thread saveChange = new Thread(SaveChange);
             saveChange.Start();
         }
-
+        // 21.05.23 06.04.2017 - - - xdfgxdfgxdgdf
         private void SaveChange()
         {
             string path = Directory.GetCurrentDirectory();
             string pathXmlTree = Path.Combine(path, @"XML\XMLTree.xml");
-            TreeNode selectTreeNode = (TreeNode)selectNode;
+            TreeNode selectTreeNode = (TreeNode)_selectNode;
 
             XmlDocument xmlTree = new XmlDocument();
-            xmlTree.Load(pathXmlTree);
-            File.Delete(pathXmlTree);
-            XmlElement xRoot = xmlTree.DocumentElement;
-            if (xRoot == null) throw new ArgumentNullException(nameof(xRoot));
-            int num = 0;
-            if (xRoot.HasChildNodes)
+            try
             {
-                foreach (XmlNode xNode in xRoot)
+                xmlTree.Load(pathXmlTree);
+            }
+            catch (Exception e)
+            {
+                Logs.Logs.WriteException(e.Message);
+            }
+            try
+            {
+                XmlElement xRoot = xmlTree.DocumentElement;
+                if (xRoot == null) throw new ArgumentNullException(nameof(xRoot));
+                int num = 0;
+                if (xRoot.HasChildNodes)
                 {
-                    ChangeTree(ref num, xNode, selectTreeNode);
+                    foreach (XmlNode xNode in xRoot)
+                    {
+                        ChangeTree(ref num, xNode, selectTreeNode);
+                    }
                 }
             }
-            xmlTree.Save(pathXmlTree);
+            catch (Exception e)
+            {
+                Logs.Logs.WriteException(e.Message);
+            }
+           
+            try
+            {
+
+                xmlTree.Save(pathXmlTree);
+            }
+            catch (Exception e)
+            {
+                Logs.Logs.WriteException(e.Message);
+            }
             LoadView();
         }
 
@@ -170,7 +193,6 @@ namespace Tree
             {
                 if (selectNode.Nodes.Count==0)
                 {
-                    var control = (Control)_controls[num];
                     XmlNode xn= xNode.ChildNodes[0];
                     xn.InnerText= (string) Invoke(GetTextDelegate,num);
                     ++num;
